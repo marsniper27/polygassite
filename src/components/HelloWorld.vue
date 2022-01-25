@@ -38,8 +38,10 @@
         </div>
       </div>
     <h2> Estimated Base Fee: {{this.currentGas.estimatedBaseFee}}</h2>
-    <h2>Block Time: {{this.currentGas.blockTime}}</h2>
+    <h2>Block Time: {{this.currentGas.blockTime}}s</h2>
     <h2>Block number: {{this.currentGas.blockNumber}}</h2>
+    <button @click="getGas()">refresh</button>
+  
   </div>
 </template>
 
@@ -60,11 +62,17 @@ export default {
     msg: String
   },
 
-  async created(){
-    this.currentGas = await polygon.fetch();
-    this.safeLow=this.currentGas.safeLow;
-    this.standard = this.currentGas.standard;
-    this.fast= this.currentGas.fast;
+  created(){
+    this.getGas();
+  },
+
+  methods:{
+    async getGas(){
+      this.currentGas = await polygon.fetch();
+      this.safeLow=this.currentGas.safeLow;
+      this.standard = this.currentGas.standard;
+      this.fast= this.currentGas.fast;
+    }
   }
 }
 </script>
