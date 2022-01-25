@@ -59,7 +59,9 @@ export default {
       fast:null,
       blockTime:null,
       avgFee:null,
-      fees:[]
+      fees:[],
+      init:false,
+      delay:0
     }
   },
   props: {
@@ -67,15 +69,33 @@ export default {
   },
 
   created(){
-    this.getGas();
+    if(!this.init){
+      this.getGas();
+      this.init = true;
+    }
   },
 
   methods:{
     async getGas(){
-      this.currentGas = await polygon.fetch();
-      this.safeLow=this.currentGas.safeLow;
-      this.standard = this.currentGas.standard;
-      this.fast= this.currentGas.fast;
+      try{
+        this.currentGas = await polygon.fetch();
+        this.safeLow=this.currentGas.safeLow;
+        this.standard = this.currentGas.standard;
+        this.fast= this.currentGas.fast;
+        this.delay = this.currentGas.blockTime*1000;
+
+       this.setDelay();
+      }catch(error){
+        console.log(error)
+      }
+
+    },
+    async setDelay(){
+      setTimeout(()=>this.getGas(), this.delay)//this.currentGas.blockTime*1000000)
+      setTimeout(()=>this.calcAvg(), this.delay)//this.currentGas.blockTime*1000000)
+    },
+    async calcAvg(){
+      try{
       if(this.fees.length < 500){
         this.fees.push(this.currentGas);
       }
@@ -88,12 +108,11 @@ export default {
         _avgFee = _avgFee+this.fees[i].estimatedBaseFee;
       }
       _avgFee = _avgFee+this.currentGas.estimatedBaseFee;
-      this.avgFee = (_avgFee/this.fees.length);
-      
-      this.setDelay();
-    },
-    async setDelay(){
-      setTimeout(this.getGas(), this.currentGas.blockTime*10000)
+      _avgFee = (_avgFee/this.fees.length);
+     this.avgFee = _avgFee;
+      }catch(error){
+        console.log("avg error: " +error)
+      }
     }
   }
 }
