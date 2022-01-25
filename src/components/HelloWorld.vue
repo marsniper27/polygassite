@@ -95,23 +95,26 @@ export default {
       setTimeout(()=>this.calcAvg(), this.delay)//this.currentGas.blockTime*1000000)
     },
     async calcAvg(){
-      try{
-      if(this.fees.length < 500){
-        this.fees.push(this.currentGas);
-      }
-      else if(this.fees.length == 500){
-        this.fees.shift();
-        this.fees.push(this.currentGas);
-      }
-      var _avgFee = 0;
-      for(let i = 0; i< this.fees.length; i++){
-        _avgFee = _avgFee+this.fees[i].estimatedBaseFee;
-      }
-      _avgFee = _avgFee+this.currentGas.estimatedBaseFee;
-      _avgFee = (_avgFee/this.fees.length);
-     this.avgFee = _avgFee;
-      }catch(error){
-        console.log("avg error: " +error)
+      var feelength = this.fees.length -1
+      if( this.fees.length == 0||this.currentGas.blockNumber > this.fees[feelength].blockNumber){
+        try{
+        if(this.fees.length < 500){
+          this.fees.push(this.currentGas);
+        }
+        else if(this.fees.length == 500){
+          this.fees.shift();
+          this.fees.push(this.currentGas);
+        }
+        var _avgFee = 0;
+        for(let i = 0; i< this.fees.length; i++){
+          _avgFee = _avgFee+this.fees[i].estimatedBaseFee;
+        }
+        _avgFee = _avgFee+this.currentGas.estimatedBaseFee;
+        _avgFee = (_avgFee/this.fees.length);
+      this.avgFee = _avgFee;
+        }catch(error){
+          console.log("avg error: " +error)
+        }
       }
     }
   }
