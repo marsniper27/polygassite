@@ -40,9 +40,9 @@
     <h2> Estimated Base Fee: {{this.currentGas.estimatedBaseFee}}</h2>
     <h2>Block Time: {{this.currentGas.blockTime}}s</h2>
     <h2>Block number: {{this.currentGas.blockNumber}}</h2>
-    <button @click="getGas()">refresh</button>
     
-    <h2>Last 500 block avg base fee: {{this.avgFee}}</h2>
+    <h2>Last {{this.fees.length}} block avg base fee: {{this.avgFee}}</h2>
+    <button @click="getGas()">Refresh</button>
   
   </div>
 </template>
