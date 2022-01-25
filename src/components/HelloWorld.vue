@@ -41,6 +41,8 @@
     <h2>Block Time: {{this.currentGas.blockTime}}s</h2>
     <h2>Block number: {{this.currentGas.blockNumber}}</h2>
     <button @click="getGas()">refresh</button>
+    
+    <h2>Last 500 block avg base fee: {{this.avgFee}}</h2>
   
   </div>
 </template>
@@ -55,7 +57,9 @@ export default {
       safeLow:null,
       standard:null,
       fast:null,
-      blockTime:null
+      blockTime:null,
+      avgFee:null,
+      fees:[]
     }
   },
   props: {
@@ -72,12 +76,25 @@ export default {
       this.safeLow=this.currentGas.safeLow;
       this.standard = this.currentGas.standard;
       this.fast= this.currentGas.fast;
+      if(this.fees.length < 500){
+        this.fees.push(this.currentGas);
+      }
+      else if(this.fees.length == 500){
+        this.fees.shift();
+        this.fees.push(this.currentGas);
+      }
+      var _avgFee = 0;
+      for(let i = 0; i< this.fees.length; i++){
+        _avgFee = _avgFee+this.fees[i].estimatedBaseFee;
+      }
+      _avgFee = _avgFee+this.currentGas.estimatedBaseFee;
+      this.avgFee = (_avgFee/this.fees.length);
+      
       this.setDelay();
-      //this.blockTime = this.currentGas.blockTime;
     },
     async setDelay(){
       setTimeout(this.getGas(), this.currentGas.blockTime*10000)
-    }//alert("This message is displayed after " + this.currentGas.blockTime + " seconds!"
+    }
   }
 }
 </script>
