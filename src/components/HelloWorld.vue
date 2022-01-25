@@ -55,7 +55,7 @@ export default {
       safeLow:null,
       standard:null,
       fast:null,
-      count:0,
+      blockTime:null
     }
   },
   props: {
@@ -72,7 +72,12 @@ export default {
       this.safeLow=this.currentGas.safeLow;
       this.standard = this.currentGas.standard;
       this.fast= this.currentGas.fast;
-    }
+      this.setDelay();
+      //this.blockTime = this.currentGas.blockTime;
+    },
+    async setDelay(){
+      setTimeout(this.getGas(), this.currentGas.blockTime*10000)
+    }//alert("This message is displayed after " + this.currentGas.blockTime + " seconds!"
   }
 }
 </script>
